@@ -10,3 +10,4 @@ data "azurerm_storage_account" "storage_acc" {
   name                = var.storage_account_name
   resource_group_name = var.storage_account_resource_group_name
 }
+
