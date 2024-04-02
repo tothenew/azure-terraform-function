@@ -4,7 +4,7 @@ module "Azure_Function_App" {
    resource_group_name = "gaurav"
    location            = "Central India"
 
-   storage_account_name = "st11"
+   storage_account_name = "terraformteststacc01"
    storage_account_resource_group_name = "gaurav"
    
    ################# App Service Plan #############################
@@ -43,5 +43,4 @@ module "Azure_Function_App" {
       python_version              = "3.10"
     }
    }
-  
 }

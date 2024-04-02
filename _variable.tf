@@ -47,12 +47,12 @@ variable "create_storage_account" {
 
 variable "storage_account_name" {
   type = string
-  default = "terraformteststacc01"
+  default = "storageacc0011"
 }
 
 variable "storage_account_resource_group_name" {
   type = string
-  default = "gaurav"
+  default = "test"
 }
 #####################################################################################################
 ###                                           Function App                                        ###
@@ -60,7 +60,7 @@ variable "storage_account_resource_group_name" {
 variable "service_plan_name" {
   description = "Name of the Azure App Service Plan"
   type        = string
-  default     = "example-app-service-plan"
+  default     = "app-service-plan"
 }
 
 variable "os_type" {
@@ -84,18 +84,18 @@ variable "function_apps" {
     functions_extension_version   = string
   }))
   default = {
-    default_function_app = {
-      name                        = "default-function-app-1"
-      location                    = "Central India"
-      public_network_access_enabled = true
-      functions_extension_version = "~4"
-    }
-    default_function_app-2 = {
-      name                        = "default-function-app"
-      location                    = "Central India"
-      public_network_access_enabled = true
-      functions_extension_version = "~4"
-    }
+    # default_function_app = {
+    #   name                        = "default-function-app-1"
+    #   location                    = "Central India"
+    #   public_network_access_enabled = true
+    #   functions_extension_version = "~4"
+    # }
+    # default_function_app-2 = {
+    #   name                        = "default-function-app"
+    #   location                    = "Central India"
+    #   public_network_access_enabled = true
+    #   functions_extension_version = "~4"
+    # }
   }
 }
 
@@ -103,9 +103,9 @@ variable "site_config" {
   description = "Site config for Function App. See documentation https://www.terraform.io/docs/providers/azurerm/r/app_service.html#site_config. IP restriction attribute is not managed in this block."
   type        = any
   default     = {
-    application_stack = {
-      python_version              = "3.10"
-    }
+    # application_stack = {
+    #   python_version              = "3.10"
+    # }
     }
 }
 

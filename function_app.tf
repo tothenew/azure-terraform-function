@@ -12,16 +12,18 @@ resource "azurerm_service_plan" "app_service_plan" {
 
 resource "azurerm_linux_function_app" "linux_function_app" {
   for_each = var.os_type == "Linux" ? var.function_apps : {}
+  
+  depends_on = [ data.azurerm_storage_account.storage_acc ]
 
   name                = each.value.name
   resource_group_name = var.resource_group_name
   location            = each.value.location
   
-  storage_account_name       = data.azurerm_storage_account.storage_acc.name
-  storage_account_access_key = data.azurerm_storage_account.storage_acc.primary_access_key
-  service_plan_id     = azurerm_service_plan.app_service_plan.id                                                
+  storage_account_name          = data.azurerm_storage_account.storage_acc.name
+  storage_account_access_key    = data.azurerm_storage_account.storage_acc.primary_access_key
+  service_plan_id               = azurerm_service_plan.app_service_plan.id                                                
   public_network_access_enabled = each.value.public_network_access_enabled
-  functions_extension_version = each.value.functions_extension_version
+  functions_extension_version   = each.value.functions_extension_version
 
   dynamic "site_config" {
     for_each = [var.site_config]
@@ -113,6 +115,8 @@ dynamic "identity" {
 resource "azurerm_linux_function_app" "window_function_app" {
   for_each = var.os_type == "Linux" ? var.function_apps : {}
 
+  depends_on = [ data.azurerm_storage_account.storage_acc ]
+
   name                = each.value.name
   resource_group_name = var.resource_group_name
   location            = each.value.location
@@ -203,6 +207,7 @@ dynamic "identity" {
       identity_ids = var.identity_type == "UserAssigned" ? var.identity_ids : null
     }
   }
+  
  tags = {
     CreatedBy = "gaurav"
     Purpose   = "terraform test"
