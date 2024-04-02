@@ -19,8 +19,9 @@ resource "azurerm_linux_function_app" "linux_function_app" {
   resource_group_name = var.resource_group_name
   location            = each.value.location
   
-  storage_account_name          = data.azurerm_storage_account.storage_acc.name
-  storage_account_access_key    = data.azurerm_storage_account.storage_acc.primary_access_key
+  storage_account_name       = lookup(data.azurerm_storage_account.storage_acc, "storage_name", null)
+  storage_account_access_key = lookup(data.azurerm_storage_account.storage_acc, "storage_account_access_key", null)
+
   service_plan_id               = azurerm_service_plan.app_service_plan.id                                                
   public_network_access_enabled = each.value.public_network_access_enabled
   functions_extension_version   = each.value.functions_extension_version
