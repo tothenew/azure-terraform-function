@@ -13,8 +13,6 @@ resource "azurerm_service_plan" "app_service_plan" {
 resource "azurerm_linux_function_app" "linux_function_app" {
   for_each = var.os_type == "Linux" ? var.function_apps : {}
   
-  depends_on = [ data.azurerm_storage_account.storage_acc ]
-
   name                = each.value.name
   resource_group_name = var.resource_group_name
   location            = each.value.location
@@ -113,10 +111,8 @@ dynamic "identity" {
 }
 
 
-resource "azurerm_linux_function_app" "window_function_app" {
-  for_each = var.os_type == "Linux" ? var.function_apps : {}
-
-  depends_on = [ data.azurerm_storage_account.storage_acc ]
+resource "azurerm_windows_function_app" "window_function_app" {
+  for_each = var.os_type == "Windows" ? var.function_apps : {}
 
   name                = each.value.name
   resource_group_name = var.resource_group_name
@@ -159,25 +155,12 @@ resource "azurerm_linux_function_app" "window_function_app" {
     dynamic "application_stack" {
         for_each = lookup(site_config.value, "application_stack", null) == null ? [] : ["application_stack"]
         content {
-          dynamic "docker" {
-            for_each = lookup(var.site_config.application_stack, "docker", null) == null ? [] : ["docker"]
-            content {
-              registry_url      = var.site_config.application_stack.docker.registry_url
-              image_name        = var.site_config.application_stack.docker.image_name
-              image_tag         = var.site_config.application_stack.docker.image_tag
-              registry_username = lookup(var.site_config.application_stack.docker, "registry_username", null)
-              registry_password = lookup(var.site_config.application_stack.docker, "registry_password", null)
-            }
-          }
-
           dotnet_version              = lookup(var.site_config.application_stack, "dotnet_version", null)
           use_dotnet_isolated_runtime = lookup(var.site_config.application_stack, "use_dotnet_isolated_runtime", null)
 
           java_version            = lookup(var.site_config.application_stack, "java_version", null)
           node_version            = lookup(var.site_config.application_stack, "node_version", null)
-          python_version          = lookup(var.site_config.application_stack, "python_version", null)
           powershell_core_version = lookup(var.site_config.application_stack, "powershell_core_version", null)
-
           use_custom_runtime = lookup(var.site_config.application_stack, "use_custom_runtime", null)
         }
       }

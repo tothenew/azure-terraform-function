@@ -46,26 +46,30 @@ variable "create_storage_account" {
 
 
 variable "storage_account_name" {
+  description = " storage account name if  have an existing storage account"
   type = string
-  default = "storageacc01"
+  default = "terraformteststacc0111"
+}
+
+variable "storage_account_resource_group_name" {
+  description = " storage account resource group name if have an existing storage account"
+  type = string
+  default = "test"
 }
 
 variable "storage_name" {
-  description = "Default storage account name to use if not provided in each.value"
+  description = "storage account name to use if not don't have an existing storage account"
   type        = string
   default     = null
 }
 
 variable "storage_account_access_key" {
-  description = "Default storage account access key to use if not provided in data block"
+  description = "storage account access key to use if not don't have an existing storage account"
   type        = string
   default     = null
 }
 
-variable "storage_account_resource_group_name" {
-  type = string
-  default = "test"
-}
+
 
 
 #####################################################################################################
@@ -98,12 +102,12 @@ variable "function_apps" {
     functions_extension_version   = string
   }))
   default = {
-    # default_function_app = {
-    #   name                        = "default-function-app-1"
-    #   location                    = "Central India"
-    #   public_network_access_enabled = true
-    #   functions_extension_version = "~4"
-    # }
+    default_function_app = {
+      name                        = "default-function-app-1"
+      location                    = "Central India"
+      public_network_access_enabled = true
+      functions_extension_version = "~4"
+    }
     # default_function_app-2 = {
     #   name                        = "default-function-app"
     #   location                    = "Central India"
