@@ -10,7 +10,7 @@ resource "azurerm_service_plan" "app_service_plan" {
   }
 }
 
-resource "azurerm_linux_function_app" "function_app" {
+resource "azurerm_linux_function_app" "linux_function_app" {
   for_each = var.os_type == "Linux" ? var.function_apps : {}
 
   name                = each.value.name
@@ -110,7 +110,7 @@ dynamic "identity" {
 }
 
 
-resource "azurerm_linux_function_app" "function_app" {
+resource "azurerm_linux_function_app" "window_function_app" {
   for_each = var.os_type == "Linux" ? var.function_apps : {}
 
   name                = each.value.name
