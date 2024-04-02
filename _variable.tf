@@ -47,19 +47,19 @@ variable "create_storage_account" {
 
 variable "storage_account_name" {
   type = string
-  default = "storageacc0011"
+  default = "storageacc01"
 }
 
 variable "storage_name" {
   description = "Default storage account name to use if not provided in each.value"
   type        = string
-  default     = "default_storage_account"
+  default     = null
 }
 
 variable "storage_account_access_key" {
   description = "Default storage account access key to use if not provided in data block"
   type        = string
-  default     = "default_access_key"
+  default     = null
 }
 
 variable "storage_account_resource_group_name" {
