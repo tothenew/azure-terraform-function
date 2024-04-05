@@ -26,19 +26,11 @@ Before you begin, ensure you have the following requirements met:
 |------|---------|
 | <a name="provider_Azure"></a> [azurerm](#provider\_azure) | >=3.0 |
 
+
 ## Resources
 
 This Terraform configuration provisions the following Azure resources:
-
-| Resource                   | Description                                       |
-|----------------------------|---------------------------------------------------|
-| azurerm_service_plan       | Azure App Service Plan                            |
-| azurerm_linux_function_app | Linux-based Azure Function Apps                   |
-| azurerm_windows_function_app| Windows-based Azure Function Apps                 |
-
-
-## Resources
-
+ 
 | Name                                    | Description                                                  | Type     |
 |-----------------------------------------|--------------------------------------------------------------|----------|
 |  `azurerm_service_plan`       | Azure App Service Plan                            |  `azurerm` |
