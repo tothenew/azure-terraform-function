@@ -23,9 +23,11 @@ resource "azurerm_linux_function_app" "linux_function_app" {
   service_plan_id               = azurerm_service_plan.app_service_plan.id                                                
   public_network_access_enabled = each.value.public_network_access_enabled
   functions_extension_version   = each.value.functions_extension_version
+  client_certificate_enabled    = lookup(each.value, "client_certificate_enabled", null)
+  client_certificate_mode       = lookup(each.value, "client_certificate_mode", null)
 
   dynamic "site_config" {
-    for_each = [var.site_config]
+    for_each = [each.value["site_config"]]
 
     content {
       always_on                         = lookup(site_config.value, "always_on", null)
@@ -51,49 +53,61 @@ resource "azurerm_linux_function_app" "linux_function_app" {
       application_insights_key               = lookup(site_config.value, "application_insights_key", false)
 
 
-    dynamic "application_stack" {
-        for_each = lookup(site_config.value, "application_stack", null) == null ? [] : ["application_stack"]
+     dynamic "application_stack" {
+        for_each = lookup(each.value, "application_stack", null) != null ? ["application_stack"] : []
+
         content {
           dynamic "docker" {
-            for_each = lookup(var.site_config.application_stack, "docker", null) == null ? [] : ["docker"]
+            for_each = lookup(each.value.application_stack, "docker", null) != null ? ["docker"] : []
             content {
-              registry_url      = var.site_config.application_stack.docker.registry_url
-              image_name        = var.site_config.application_stack.docker.image_name
-              image_tag         = var.site_config.application_stack.docker.image_tag
-              registry_username = lookup(var.site_config.application_stack.docker, "registry_username", null)
-              registry_password = lookup(var.site_config.application_stack.docker, "registry_password", null)
+              registry_url      = each.value.application_stack.docker.registry_url
+              image_name        = each.value.application_stack.docker.image_name
+              image_tag         = each.value.application_stack.docker.image_tag
+              registry_username = lookup(each.value.application_stack.docker, "registry_username", null)
+              registry_password = lookup(each.value.application_stack.docker, "registry_password", null)
             }
           }
 
-          dotnet_version              = lookup(var.site_config.application_stack, "dotnet_version", null)
-          use_dotnet_isolated_runtime = lookup(var.site_config.application_stack, "use_dotnet_isolated_runtime", null)
-
-          java_version            = lookup(var.site_config.application_stack, "java_version", null)
-          node_version            = lookup(var.site_config.application_stack, "node_version", null)
-          python_version          = lookup(var.site_config.application_stack, "python_version", null)
-          powershell_core_version = lookup(var.site_config.application_stack, "powershell_core_version", null)
-
-          use_custom_runtime = lookup(var.site_config.application_stack, "use_custom_runtime", null)
+          dotnet_version              = lookup(each.value.application_stack, "dotnet_version", null)
+          use_dotnet_isolated_runtime = lookup(each.value.application_stack, "use_dotnet_isolated_runtime", null)
+          java_version                = lookup(each.value.application_stack, "java_version", null)
+          node_version                = lookup(each.value.application_stack, "node_version", null)
+          python_version              = lookup(each.value.application_stack, "python_version", null)
+          powershell_core_version     = lookup(each.value.application_stack, "powershell_core_version", null)
+          use_custom_runtime          = lookup(each.value.application_stack, "use_custom_runtime", null)
         }
+     }
+     
+     dynamic "ip_restriction" {
+      for_each = lookup(each.value, "ip_restriction", null) != null ? ["ip_restriction"] : []
+
+      content {
+        action                   = lookup(each.value.ip_restriction, "action", null)
+        name                     = lookup(each.value.ip_restriction, "name", null)
+        priority                 = lookup(each.value.ip_restriction, "priority", null)
+        headers                  = lookup(each.value.ip_restriction, "headers", null)
+        ip_address               = lookup(each.value.ip_restriction, "ip_address", null)
+        service_tag              = lookup(each.value.ip_restriction, "service_tag", null)
+        virtual_network_subnet_id = lookup(each.value.ip_restriction, "virtual_network_subnet_id", null)
       }
+    } 
 
     dynamic "cors" {
-        for_each = lookup(site_config.value, "cors", null) != null ? ["cors"] : []
+        for_each = lookup(each.value, "cors" ) != null  ? ["cors"] : []
         content {
-          allowed_origins     = lookup(site_config.value.cors, "allowed_origins", [])
-          support_credentials = lookup(site_config.value.cors, "support_credentials", false)
+          allowed_origins     = lookup(each.value.cors, "allowed_origins", [])
+          support_credentials = lookup(each.value.cors, "support_credentials", false)
         }
       }
 
     dynamic "app_service_logs" {
-        for_each = lookup(site_config.value, "app_service_logs", null) != null ? ["app_service_logs"] : []
+        for_each = lookup(each.value, "app_service_logs", null) != null ? ["app_service_logs"] : []
         content {
-          disk_quota_mb         = lookup(site_config.value.app_service_logs, "disk_quota_mb", null)
-          retention_period_days = lookup(site_config.value.app_service_logs, "retention_period_days", null)
+          disk_quota_mb         = lookup(each.value.app_service_logs, "disk_quota_mb", null)
+          retention_period_days = lookup(each.value.app_service_logs, "retention_period_days", null)
         }
       }
    } 
-
 
 }
 
@@ -126,7 +140,7 @@ resource "azurerm_windows_function_app" "window_function_app" {
   functions_extension_version = each.value.functions_extension_version
 
   dynamic "site_config" {
-    for_each = [var.site_config]
+    for_each = [each.value["site_config"]]
 
     content {
       always_on                         = lookup(site_config.value, "always_on", null)
@@ -147,43 +161,58 @@ resource "azurerm_windows_function_app" "window_function_app" {
       runtime_scale_monitoring_enabled  = lookup(site_config.value, "runtime_scale_monitoring_enabled", null)
       use_32_bit_worker                 = lookup(site_config.value, "use_32_bit_worker", null)
       websockets_enabled                = lookup(site_config.value, "websockets_enabled", false)
+      ip_restriction_default_action     = lookup(site_config.value, "ip_restriction_default_action", null)
       
       application_insights_connection_string = lookup(site_config.value, "application_insights_connection_string", null)
       application_insights_key               = lookup(site_config.value, "application_insights_key", false)
 
 
     dynamic "application_stack" {
-        for_each = lookup(site_config.value, "application_stack", null) == null ? [] : ["application_stack"]
-        content {
-          dotnet_version              = lookup(var.site_config.application_stack, "dotnet_version", null)
-          use_dotnet_isolated_runtime = lookup(var.site_config.application_stack, "use_dotnet_isolated_runtime", null)
+        for_each = lookup(each.value, "application_stack", null) != null ? ["application_stack"] : []
 
-          java_version            = lookup(var.site_config.application_stack, "java_version", null)
-          node_version            = lookup(var.site_config.application_stack, "node_version", null)
-          powershell_core_version = lookup(var.site_config.application_stack, "powershell_core_version", null)
-          use_custom_runtime = lookup(var.site_config.application_stack, "use_custom_runtime", null)
+        content {
+          dotnet_version              = lookup(each.value.application_stack, "dotnet_version", null)
+          use_dotnet_isolated_runtime = lookup(each.value.application_stack, "use_dotnet_isolated_runtime", null)
+          java_version                = lookup(each.value.application_stack, "java_version", null)
+          node_version                = lookup(each.value.application_stack, "node_version", null)
+          powershell_core_version     = lookup(each.value.application_stack, "powershell_core_version", null)
+          use_custom_runtime          = lookup(each.value.application_stack, "use_custom_runtime", null)
         }
       }
 
+    dynamic "ip_restriction" {
+      for_each = lookup(each.value, "ip_restriction", null) != null ? ["ip_restriction"] : []
+
+      content {
+        action                   = lookup(each.value.ip_restriction, "action", null)
+        name                     = lookup(each.value.ip_restriction, "name", null)
+        priority                 = lookup(each.value.ip_restriction, "priority", null)
+        headers                  = lookup(each.value.ip_restriction, "headers", null)
+        ip_address               = lookup(each.value.ip_restriction, "ip_address", null)
+        service_tag              = lookup(each.value.ip_restriction, "service_tag", null)
+        virtual_network_subnet_id = lookup(each.value.ip_restriction, "virtual_network_subnet_id", null)
+      }
+    }
+
     dynamic "cors" {
-        for_each = lookup(site_config.value, "cors", null) != null ? ["cors"] : []
+        for_each = lookup(each.value, "cors", null ) != null  ? ["cors"] : []
         content {
-          allowed_origins     = lookup(site_config.value.cors, "allowed_origins", [])
-          support_credentials = lookup(site_config.value.cors, "support_credentials", false)
+          allowed_origins     = lookup(each.value.cors, "allowed_origins", [])
+          support_credentials = lookup(each.value.cors, "support_credentials", false)
         }
       }
 
     dynamic "app_service_logs" {
-        for_each = lookup(site_config.value, "app_service_logs", null) != null ? ["app_service_logs"] : []
+        for_each = lookup(each.value, "app_service_logs", null) != null ? ["app_service_logs"] : []
         content {
-          disk_quota_mb         = lookup(site_config.value.app_service_logs, "disk_quota_mb", null)
-          retention_period_days = lookup(site_config.value.app_service_logs, "retention_period_days", null)
+          disk_quota_mb         = lookup(each.value.app_service_logs, "disk_quota_mb", null)
+          retention_period_days = lookup(each.value.app_service_logs, "retention_period_days", null)
         }
       }
    } 
 
-
 }
+
 
 dynamic "identity" {
     for_each = var.identity_type != null ? ["identity"] : []
