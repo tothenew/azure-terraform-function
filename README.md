@@ -48,8 +48,8 @@ This Terraform configuration provisions the following Azure resources:
 | location                        | The Azure region where the resources will be deployed. E.g., 'East US', 'West Europe', etc. | string | "Central India" | yes |
 | create_resource_group           | Whether to create a new Resource Group.         | bool      | false            | no       |
 | create_storage_account          | Whether to create a new Storage Account.        | bool      | false            | no       |
-| storage_name                    | Storage account name to use if not don't have an existing storage account. | string | null | no       |
-| storage_account_access_key      | Storage account access key to use if not don't have an existing storage account. | string | null | no       |
+| storage_name                    | Storage account name to use if not don't have an existing storage account. | string | null | yes       |
+| storage_account_access_key      | Storage account access key to use if not don't have an existing storage account. | string | null | yes      |
 
 #### Tags Configuration
 
@@ -70,11 +70,11 @@ This Terraform configuration provisions the following Azure resources:
 
 | Name                            | Description                                     | Type      | Default          | Required |
 |---------------------------------|-------------------------------------------------|-----------|------------------|----------|
-| `resource_group_name`                | The name of the Azure Resource Group where the resources will be created | string        | `"function-app-rg"`                                      |
-| `location`                           | The Azure region where the resources will be deployed                 | string        | `"Central India"`                              |
-| service_plan_name               | Name of the Azure App Service Plan.             | string    | "app-service-plan" | no       |
-| os_type                         | Operating system type for the App Service Plan. | string    | "Windows"        | no       |
-| sku_name                        | SKU name for the App Service Plan.              | string    | "Y1"             | no       |
+| `resource_group_name`                | The name of the Azure Resource Group where the resources will be created | string        | `"function-app-rg"`                                      | yes |
+| `location`                           | The Azure region where the resources will be deployed                 | string        | `"Central India"`            | yes
+| service_plan_name               | Name of the Azure App Service Plan.             | string    | "app-service-plan" | yes    |
+| os_type                         | Operating system type for the App Service Plan. | string    | "Windows"        | yes      |
+| sku_name                        | SKU name for the App Service Plan.              | string    | "Y1"             | yes    |
 
 #### Function Apps Configuration
 
