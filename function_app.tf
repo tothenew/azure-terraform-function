@@ -4,10 +4,9 @@ resource "azurerm_service_plan" "app_service_plan" {
   location            = var.location
   os_type             = var.os_type
   sku_name            = var.sku_name
-   tags = {
-    CreatedBy = "gaurav"
-    Purpose   = "terraform test"
-  }
+  tags = merge(var.default_tags, var.common_tags, {
+    "Name" = "${var.project_name_prefix}",
+  })
 }
 
 resource "azurerm_linux_function_app" "linux_function_app" {
@@ -118,10 +117,10 @@ dynamic "identity" {
       identity_ids = var.identity_type == "UserAssigned" ? var.identity_ids : null
     }
   }
- tags = {
-    CreatedBy = "gaurav"
-    Purpose   = "terraform test"
-  }
+
+tags = merge(var.default_tags, var.common_tags, {
+    "Name" = "${var.project_name_prefix}",
+  })
 }
 
 
@@ -222,8 +221,7 @@ dynamic "identity" {
     }
   }
   
- tags = {
-    CreatedBy = "gaurav"
-    Purpose   = "terraform test"
-  }
+tags = merge(var.default_tags, var.common_tags, {
+    "Name" = "${var.project_name_prefix}",
+  })
 }

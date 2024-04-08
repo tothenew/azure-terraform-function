@@ -25,7 +25,7 @@ variable "common_tags" {
 variable "resource_group_name" {
   description = "The name of the Azure Resource Group where the resources will be created."
   type        = string
-  default     = "gaurav"
+  default     = "function-app-rg"
 }
 
 variable "location" {
@@ -48,13 +48,13 @@ variable "create_storage_account" {
 variable "storage_account_name" {
   description = " storage account name if  have an existing storage account"
   type = string
-  default = "terraformteststacc01"
+  default = null
 }
 
 variable "storage_account_resource_group_name" {
   description = " storage account resource group name if have an existing storage account"
   type = string
-  default = "gaurav"
+  default = null
 }
 
 variable "storage_name" {
